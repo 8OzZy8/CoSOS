@@ -18,7 +18,7 @@ public class DesktopLauncher {
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bread = new BufferedReader(fileReader);
 		String radek = bread.readLine();
-		System.out.println(radek);
+		System.out.println(radek);	//test
 		Boolean fullscreen = false;
 		if(radek != null){
 			String[] hodnoty = radek.split("=");
