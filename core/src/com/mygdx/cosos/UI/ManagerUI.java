@@ -14,7 +14,7 @@ public class ManagerUI {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 32;
-        parameter.characters =  parameter.characters  + "ěščřžýáíéĚŠČŘŽÝÁÍÉ"; // přidejte všechny znaky, které chcete zahrnout
+        parameter.characters =  parameter.characters  + "ěščřžýáíéůúĚŠČŘŽÝÁÍÉÚŮ"; // přidejte všechny znaky, které chcete zahrnout
         font = generator.generateFont(parameter);
         generator.dispose();
         return font;

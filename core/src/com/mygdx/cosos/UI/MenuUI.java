@@ -1,10 +1,13 @@
 package com.mygdx.cosos.UI;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.cosos.CoSOS;
@@ -12,16 +15,15 @@ import com.mygdx.cosos.CoSOS;
 public class MenuUI {
     private Stage stage;
     private TextButton buttonSpustit;
-    private TextButton buttonAdmin;
     private TextButton konecButton;
     private TextButton.TextButtonStyle buttonStyle;
     private BitmapFont font;
+    private Skin skin;
 
     public MenuUI(Stage stage) {
         this.stage = stage;
-
+        this.skin = new Skin();
         font = ManagerUI.setFont(font);
-
         createMenuUI();
     }
 
