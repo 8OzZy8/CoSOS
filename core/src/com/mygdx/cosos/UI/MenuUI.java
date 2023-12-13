@@ -20,13 +20,7 @@ public class MenuUI {
     public MenuUI(Stage stage) {
         this.stage = stage;
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 32;
-        parameter.characters =  parameter.characters  + "ěščřžýáíéĚŠČŘŽÝÁÍÉ"; // přidejte všechny znaky, které chcete zahrnout
-        font = generator.generateFont(parameter);
-        generator.dispose();
-
+        font = ManagerUI.setFont(font);
 
         createMenuUI();
     }
@@ -44,21 +38,11 @@ public class MenuUI {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Button clicked!");
+                CoSOS.StavHry = CoSOS.GameState.SETTINGS;
             }
         });
         stage.addActor(buttonSpustit);
 
-        buttonAdmin = new TextButton("Admin", buttonStyle);
-        buttonAdmin.setPosition(Gdx.graphics.getWidth() / 2 - buttonAdmin.getWidth() / 2,
-                (Gdx.graphics.getHeight() / 2 - buttonAdmin.getHeight() / 2)-50);
-
-        buttonAdmin.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                CoSOS.StavHry = CoSOS.GameState.ADMIN;
-            }
-        });
-        stage.addActor(buttonAdmin);
 
         konecButton = new TextButton("Konec", buttonStyle);
         konecButton.setPosition(Gdx.graphics.getWidth() / 2 - konecButton.getWidth() / 2,
@@ -71,21 +55,6 @@ public class MenuUI {
             }
         });
         stage.addActor(konecButton);
-
-    }
-    public void adminPage(Stage AdminStage){
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 32;
-        parameter.characters =  parameter.characters  + "ěščřžýáíéĚŠČŘŽÝÁÍÉ"; // přidejte všechny znaky, které chcete zahrnout
-        font = generator.generateFont(parameter);
-        konecButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-        AdminStage.addActor(konecButton);
 
     }
 }
