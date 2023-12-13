@@ -39,6 +39,13 @@ public class GameUI {
     private Sprite Zakryte7;
 
     private Texture bodyTextura;
+    private Texture TeamBackgroundText;
+    private Texture Napoveda1Textura;
+    private Texture Napoveda2Textura;
+    private Texture Napoveda3Textura;
+    private Texture Napoveda1TexturaNe;
+    private Texture Napoveda2TexturaNe;
+    private Texture Napoveda3TexturaNe;
     private Sprite bodyBack1;
     private Sprite bodyBack2;
     private Sprite bodyBack3;
@@ -46,6 +53,11 @@ public class GameUI {
     private Sprite bodyBack5;
     private Sprite bodyBack6;
     private Sprite bodyBack7;
+
+    private Sprite team1Back;
+    private Sprite team2Back;
+    private Sprite team3Back;
+    private Sprite team4Back;
 
     private  float logoScale = 0.5f;  // Původní velikost loga
     private float logoTargetScale = 0.2f;  // Cílová velikost loga
@@ -67,6 +79,22 @@ public class GameUI {
 
         ZakryteSlovoTextura = new Texture(Gdx.files.internal("policka/prazdne.png"));
         bodyTextura = new Texture(Gdx.files.internal("policka/bodyne.png"));
+
+        TeamBackgroundText = new Texture(Gdx.files.internal("Teamy/teambackground.png"));
+        team1Back = new Sprite(TeamBackgroundText);
+        team2Back = new Sprite(TeamBackgroundText);
+        team3Back = new Sprite(TeamBackgroundText);
+        team4Back = new Sprite(TeamBackgroundText);
+
+
+        Napoveda1TexturaNe = new Texture(Gdx.files.internal("Teamy/napoveda_50_ne.png"));
+        Napoveda2TexturaNe = new Texture(Gdx.files.internal("Teamy/napoveda_osoba_ne.png"));
+        Napoveda3TexturaNe = new Texture(Gdx.files.internal("Teamy/napoveda_otaznik_ne.png"));
+
+        Napoveda1Textura = new Texture(Gdx.files.internal("Teamy/napoveda_50_po.png"));
+        Napoveda2Textura = new Texture(Gdx.files.internal("Teamy/napoveda_osoba_po.png"));
+        Napoveda3Textura = new Texture(Gdx.files.internal("Teamy/napoveda_otaznik_po.png"));
+
         Zakryte1 = new Sprite(ZakryteSlovoTextura);
         Zakryte2 = new Sprite(ZakryteSlovoTextura);
         Zakryte3 = new Sprite(ZakryteSlovoTextura);
@@ -103,6 +131,7 @@ public class GameUI {
             public void clicked(InputEvent event, float x, float y) {
                 CoSOS.StavHry = CoSOS.GameState.MENU;
                 CoSOS.stopMusic();
+                resetGameUI();
             }
         });
         stageGame.addActor(menu);
@@ -187,11 +216,101 @@ public class GameUI {
         bodyBack7.setScale(0.7f);
         bodyBack7.setPosition(polickaBodyX,polickaY);
         stageGame.addActor(new CoveredWordActor(bodyBack7));
+
+        drawTeams();
+    }
+    public void drawTeams(){
+        float teamyX = Gdx.graphics.getWidth()-500;
+        float teamyY = Gdx.graphics.getHeight()-250;
+        float size = 0.9f;
+        team1Back.setScale(size);
+        team1Back.setPosition(teamyX, teamyY);
+        stageGame.addActor(new CoveredWordActor(team1Back));
+
+        teamyY = teamyY - 200;
+        team2Back.setScale(size);
+        team2Back.setPosition(teamyX, teamyY);
+        stageGame.addActor(new CoveredWordActor(team2Back));
+        if(CoSOS.pocetTymu > 2) {
+            teamyY = teamyY - 200;
+            team3Back.setScale(size);
+            team3Back.setPosition(teamyX, teamyY);
+            stageGame.addActor(new CoveredWordActor(team3Back));
+            if(CoSOS.pocetTymu > 3) {
+                teamyY = teamyY - 200;
+                team4Back.setScale(size);
+                team4Back.setPosition(teamyX, teamyY);
+                stageGame.addActor(new CoveredWordActor(team4Back));
+            }
+        }
+
     }
     public void resetAnimation() {
         logoScale = 0.5f;
         logoPosition.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         CoSOS.IntroAnim = false;
+    }
+    public void resetGameUI(){
+        hideSprite(Zakryte1);
+        hideSprite(Zakryte2);
+        hideSprite(Zakryte3);
+        hideSprite(Zakryte4);
+        hideSprite(Zakryte5);
+        hideSprite(Zakryte6);
+        hideSprite(Zakryte7);
+
+        hideSprite(bodyBack1);
+        hideSprite(bodyBack2);
+        hideSprite(bodyBack3);
+        hideSprite(bodyBack4);
+        hideSprite(bodyBack5);
+        hideSprite(bodyBack6);
+        hideSprite(bodyBack7);
+
+        hideSprite(team1Back);
+        hideSprite(team2Back);
+        hideSprite(team3Back);
+        hideSprite(team4Back);
+
+
+        hledatSLovo.setVisible(false);
+
+    }
+    public void startGameAgain(){
+        showSprite(Zakryte1);
+        showSprite(Zakryte2);
+        showSprite(Zakryte3);
+        showSprite(Zakryte4);
+        showSprite(Zakryte5);
+        showSprite(Zakryte6);
+        showSprite(Zakryte7);
+
+        showSprite(bodyBack1);
+        showSprite(bodyBack2);
+        showSprite(bodyBack3);
+        showSprite(bodyBack4);
+        showSprite(bodyBack5);
+        showSprite(bodyBack6);
+        showSprite(bodyBack7);
+
+        showSprite(team1Back);
+        showSprite(team2Back);
+        if(CoSOS.pocetTymu > 2){
+            showSprite(team3Back);
+            if(CoSOS.pocetTymu > 3){
+                showSprite(team4Back);
+            }
+        }
+    }
+    private void hideSprite(Sprite sprite) {
+        if (sprite != null) {
+            sprite.setAlpha(0f); // Set alpha to 0 to make the sprite invisible
+        }
+    }
+    private void showSprite(Sprite sprite) {
+        if (sprite != null) {
+            sprite.setAlpha(1f); // Set alpha to 0 to make the sprite invisible
+        }
     }
     public void update(float delta) {
         if (logoScale > logoTargetScale) {
@@ -204,6 +323,7 @@ public class GameUI {
                 if(CoSOS.IntroAnim == false) {
                     CoSOS.IntroAnim = true;
                     drawAfterAnim();
+                    startGameAgain();
                 }
             }
         }
@@ -214,26 +334,39 @@ public class GameUI {
     }
     private static class CoveredWordActor extends com.badlogic.gdx.scenes.scene2d.Actor {
         private final Sprite sprite;
-
+        private boolean isVisible;
         public CoveredWordActor(Sprite sprite) {
             this.sprite = sprite;
-        }
+            this.isVisible = true;
 
+        }
         @Override
         public void draw(Batch batch, float parentAlpha) {
-            sprite.draw(batch);
+            if (isVisible) {
+                sprite.draw(batch);
+            }
+        }
+        public void setVisible(boolean visible) {
+            this.isVisible = visible;
         }
     }
     private static class LogoActor extends com.badlogic.gdx.scenes.scene2d.Actor {
         private final Sprite sprite;
+        private boolean isVisible;
 
         public LogoActor(Sprite sprite) {
             this.sprite = sprite;
+            this.isVisible = true;
         }
 
         @Override
         public void draw(Batch batch, float parentAlpha) {
-            sprite.draw(batch);
+            if (isVisible) {
+                sprite.draw(batch);
+            }
+        }
+        public void setVisible(boolean visible) {
+            this.isVisible = visible;
         }
     }
 

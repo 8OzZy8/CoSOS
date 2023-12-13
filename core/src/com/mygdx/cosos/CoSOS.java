@@ -94,6 +94,8 @@
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 			if(reset == true){
+				Gdx.gl.glClearColor(0f, 0f, 42f / 255f, 0.9f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				gameUI.resetAnimation();
 				reset = false;
 			}
