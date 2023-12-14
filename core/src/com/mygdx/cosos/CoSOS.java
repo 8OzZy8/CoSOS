@@ -14,10 +14,20 @@
 	import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 	import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 	import com.badlogic.gdx.utils.ScreenUtils;
+	import com.mygdx.cosos.Sada.Odpoved;
+	import com.mygdx.cosos.Sada.Otazka;
 	import com.mygdx.cosos.Tym.Tym;
 	import com.mygdx.cosos.UI.GameUI;
 	import com.mygdx.cosos.UI.MenuUI;
 	import com.mygdx.cosos.UI.SettingsUI;
+
+	import java.io.*;
+	import java.nio.charset.StandardCharsets;
+	import java.text.Normalizer;
+	import java.util.ArrayList;
+	import java.util.List;
+	import java.util.Random;
+	import java.util.regex.Pattern;
 
 	public class CoSOS extends ApplicationAdapter {
 		SpriteBatch batch;
@@ -35,12 +45,29 @@
 		public static int pocetTymu = 4;
 
 		private static Sound IntroMusic;
+		private static Sound TimerMusic;
 
 		public static boolean reset = false;
 
 		public static Tym[] Tymy = new Tym[4];
 		private SettingsUI settingsUI;
 		public static boolean IntroAnim = false;
+
+		public static Otazka Otazka;
+
+		public static boolean odpoved1uhodnuto = false;
+		public static boolean odpoved2uhodnuto = false;
+		public static boolean odpoved3uhodnuto = false;
+		public static boolean odpoved4uhodnuto = false;
+		public static boolean odpoved5uhodnuto = false;
+		public static boolean odpoved6uhodnuto = false;
+		public static boolean odpoved7uhodnuto = false;
+		public static int ActiveTeam = 1;
+		public static boolean fullscreen;
+		public CoSOS(Boolean fullscreen) {
+			this.fullscreen = fullscreen;
+		}
+
 		public enum GameState {
 			MENU,
 			SETTINGS,
@@ -50,40 +77,55 @@
 
 		@Override
 		public void create () {
-			batch = new SpriteBatch();
-			stage = new Stage();
-			stageSet = new Stage();
-			stageGame = new Stage();
-			StavHry = CoSOS.GameState.MENU;
-			Gdx.input.setInputProcessor(stage);
-			font = new BitmapFont();
-			menuUI = new MenuUI(stage);
-			gameUI = new GameUI(stageGame, batch);
-			settingsUI = new SettingsUI(stageSet);
-			IntroMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/CoSOSIntro.mp3"));
-			pocetTymu = 4;
+            batch = new SpriteBatch();
+            stage = new Stage();
+            stageSet = new Stage();
+            stageGame = new Stage();
+            StavHry = CoSOS.GameState.MENU;
+            Gdx.input.setInputProcessor(stage);
+            font = new BitmapFont();
+            menuUI = new MenuUI(stage);
+            gameUI = new GameUI(stageGame, batch);
+            settingsUI = new SettingsUI(stageSet);
+            IntroMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/CoSOSIntro.mp3"));
+            TimerMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/coSOScas30s.mp3"));
+            pocetTymu = 4;
 
-		}
+        }
 		public static void SetGame(String tym1, String tym2, String tym3, String tym4){
+			ActiveTeam = 1;
+			odpoved1uhodnuto = false;
+			odpoved2uhodnuto = false;
+			odpoved3uhodnuto = false;
+			odpoved4uhodnuto = false;
+			odpoved5uhodnuto = false;
+			odpoved6uhodnuto = false;
+			odpoved7uhodnuto = false;
 			switch (pocetTymu){
 				case 2:
-					Tymy[0] = new Tym(tym1,0);
-					Tymy[1] = new Tym(tym2,0);
+					Tymy[0] = new Tym(tym1,0,false,false,false);
+					Tymy[1] = new Tym(tym2,0, false,false,false);
 					break;
 				case 3:
-					Tymy[0] = new Tym(tym1,0);
-					Tymy[1] = new Tym(tym2,0);
-					Tymy[2] = new Tym(tym3,0);
+					Tymy[0] = new Tym(tym1,0, false,false,false);
+					Tymy[1] = new Tym(tym2,0, false,false,false);
+					Tymy[2] = new Tym(tym3,0, false,false,false);
 					break;
 				case 4:
-					Tymy[0] = new Tym(tym1,0);
-					Tymy[1] = new Tym(tym2,0);
-					Tymy[2] = new Tym(tym3,0);
-					Tymy[3] = new Tym(tym4,0);
+					Tymy[0] = new Tym(tym1,0, false,false,false);
+					Tymy[1] = new Tym(tym2,0,false,false,false );
+					Tymy[2] = new Tym(tym3,0, false,false,false);
+					Tymy[3] = new Tym(tym4,0, false,false,false);
 					break;
 			}
 			IntroMusic.play(0.5f);
 
+		}
+		public static void StartTimerMusic(){
+			TimerMusic.play(0.5f);
+		}
+		public static void StopTimerMusic(){
+			TimerMusic.stop();
 		}
 		public static void stopMusic(){
 			IntroMusic.stop();
@@ -113,9 +155,183 @@
 					stageGame.draw();
 					Gdx.input.setInputProcessor(stageGame);
 					gameUI.update(Gdx.graphics.getDeltaTime());
+					if(IntroAnim == true){
+						GameUI.AktulizaceShowOdpovedi();
+						GameUI.aktulizovatBody();
+					}
 					break;
 			}
 
+		}
+		public static String removeDiacritics(String input) {
+			String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+			Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+			return pattern.matcher(normalized).replaceAll("");
+		}
+		public static void hledatOdpoved(String hledane){
+			int i = 1;
+			int pozice = 0;
+			for (Odpoved odpoved : Otazka.getOdpovedi()) {
+				hledane = hledane.trim();
+				hledane = hledane.toLowerCase();
+				hledane = removeDiacritics(hledane);
+				String vysledek = odpoved.getText();
+				vysledek = vysledek.trim();
+				vysledek = vysledek.toLowerCase();
+				vysledek = removeDiacritics(vysledek);
+				if(hledane.equals(vysledek)){
+					pozice = i;
+				}
+				i++;
+			}
+			int aktivni = ActiveTeam - 1;
+			switch (pozice){
+				case 1:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+1000);
+					odpoved1uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 2:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+900);
+					odpoved2uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 3:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+800);
+					odpoved3uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 4:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+700);
+					odpoved4uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 5:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+600);
+					odpoved5uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 6:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+500);
+					odpoved6uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				case 7:
+					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+400);
+					odpoved7uhodnuto = true;
+					ActiveTeam++;
+					if(ActiveTeam > pocetTymu){
+						ActiveTeam = 1;
+					}
+					break;
+				default:
+					System.out.println("pozice: " + pozice);
+					break;
+			}
+		}
+		public static void NovaOtazka() throws IOException {
+			CoSOS.odpoved1uhodnuto = false;
+			CoSOS.odpoved2uhodnuto = false;
+			CoSOS.odpoved3uhodnuto = false;
+			CoSOS.odpoved4uhodnuto = false;
+			CoSOS.odpoved5uhodnuto = false;
+			CoSOS.odpoved6uhodnuto = false;
+			CoSOS.odpoved7uhodnuto = false;
+			String cestaKSouboru = "assets/Otazky/tabulka.csv";
+
+			List<String> radky = nactiRadkyZeSouboru(cestaKSouboru);
+
+			if (!radky.isEmpty() && radky.equals(",1,,2,,3,,4,,5,,6,,7,,8,,9,,10,,11,,12,,13,,14,,15,,16,,17,,18,,19,,20")) {
+				radky.remove(0);
+			}
+			String nahodnyRadek = "";
+			for(int m = 0; m < 1;) {
+				nahodnyRadek = nahodnyVyberRadku(radky);
+				if (nahodnyRadek.equals(",1,,2,,3,,4,,5,,6,,7,,8,,9,,10,,11,,12,,13,,14,,15,,16,,17,,18,,19,,20")){
+					System.out.println("První řádek");
+					nahodnyRadek = nahodnyVyberRadku(radky);
+				}else {
+					m = 2;
+				}
+			}
+			System.out.println(nahodnyRadek);
+			if (nahodnyRadek != null) {
+				String[] hodnoty = nahodnyRadek.split(",");
+
+				String otazkaText = hodnoty[0];
+				List<Odpoved> odpovedi = new ArrayList<>();
+				System.out.println(otazkaText);
+				for (int i = 1; i < hodnoty.length; i++) {
+					if (!hodnoty[i].isEmpty()) {
+						String odpovedText = hodnoty[i];
+						System.out.println(odpovedText);
+						i++;
+
+						// Ověření, zda další hodnota existuje a není prázdná
+						if (i < hodnoty.length && !hodnoty[i].isEmpty()) {
+							try {
+								int pocetHlasu = Integer.parseInt(hodnoty[i]);
+								Odpoved odpoved = new Odpoved(odpovedText, pocetHlasu);
+								odpovedi.add(odpoved);
+							} catch (NumberFormatException e) {
+								System.out.println("Chyba při převodu na číslo pro odpověď: " + odpovedText);
+								// Můžete přijmout výchozí hodnotu pro pocetHlasu nebo provést jinou obsluhu chyby
+							}
+						}
+					}
+				}
+
+				Otazka = new Otazka(otazkaText,odpovedi);
+				/*for (Odpoved odpoved : Otazka.getOdpovedi()) {
+					System.out.println(odpoved.getText() + " - Hlasy: " + odpoved.getHlasy());
+				}*/
+
+			} else {
+				System.out.println("NIC");
+			}
+
+		}
+		private static List<String> nactiRadkyZeSouboru(String cesta) throws IOException {
+			List<String> radky = new ArrayList<>();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("assets/Otazky/tabulka.csv"), StandardCharsets.UTF_8));
+
+			String radek;
+			while ((radek = bufferedReader.readLine()) != null) {
+				radky.add(radek);
+			}
+
+			bufferedReader.close();
+			return radky;
+		}
+
+		private static String nahodnyVyberRadku(List<String> radky) {
+			if (radky.isEmpty()) {
+				return null; // Neexistují žádné řádky k výběru
+			}
+
+			Random random = new Random();
+			int nahodneCislo = random.nextInt(radky.size());
+
+			return radky.get(nahodneCislo);
 		}
 
 		@Override

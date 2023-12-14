@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;  // Add this import statement
 import com.mygdx.cosos.CoSOS;
 
+import java.io.IOException;
+
 public class SettingsUI  {
     private Stage stageSet;
     private BitmapFont font;
@@ -125,7 +127,7 @@ public class SettingsUI  {
         teamLabel2.setPosition(teamLabel1.getX(), teamLabel1.getY() - 100);
         stageSet.addActor(teamLabel2);
 
-        teamNameField2 = new TextField(" Tym 2", skin);
+        teamNameField2 = new TextField(" Tým 2", skin);
         teamNameField2.setSize(200, 50);
         teamNameField2.setPosition(teamLabel2.getX() + teamLabel2.getPrefWidth() + offset + frameWidth, teamLabel2.getY() - frameWidth);
         stageSet.addActor(teamNameField2);
@@ -134,7 +136,7 @@ public class SettingsUI  {
         teamLabel3.setPosition(teamLabel2.getX(), teamLabel2.getY() - 100);
         stageSet.addActor(teamLabel3);
 
-        teamNameField3 = new TextField(" Tym 3", skin);
+        teamNameField3 = new TextField(" Tým 3", skin);
         teamNameField3.setSize(200, 50);
         teamNameField3.setPosition(teamLabel3.getX() + teamLabel3.getPrefWidth() + offset + frameWidth, teamLabel3.getY() - frameWidth);
         stageSet.addActor(teamNameField3);
@@ -143,7 +145,7 @@ public class SettingsUI  {
         teamLabel4.setPosition(teamLabel3.getX(), teamLabel3.getY() - 100);
         stageSet.addActor(teamLabel4);
 
-        teamNameField4 = new TextField(" Tym 4", skin);
+        teamNameField4 = new TextField(" Tým 4", skin);
         teamNameField4.setSize(200, 50);
         teamNameField4.setPosition(teamLabel4.getX() + teamLabel4.getPrefWidth() + offset + frameWidth, teamLabel4.getY() - frameWidth);
         stageSet.addActor(teamNameField4);
@@ -177,6 +179,11 @@ public class SettingsUI  {
                 }
                 CoSOS.reset = true;
                 CoSOS.SetGame(tym1,tym2,tym3,tym4);
+                try {
+                    CoSOS.NovaOtazka();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 CoSOS.StavHry = CoSOS.GameState.GAME;
             }
         });

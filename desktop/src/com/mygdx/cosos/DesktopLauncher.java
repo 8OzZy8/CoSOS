@@ -34,6 +34,6 @@ public class DesktopLauncher {
 		}else {
 			config.setWindowedMode(dm.width - (dm.width / 6), dm.height - (dm.height / 6));
 		}
-		new Lwjgl3Application(new CoSOS(), config);
+		new Lwjgl3Application(new CoSOS(fullscreen), config);
 	}
 }

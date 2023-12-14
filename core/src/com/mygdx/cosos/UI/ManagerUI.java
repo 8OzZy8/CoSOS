@@ -14,7 +14,26 @@ public class ManagerUI {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 32;
-        parameter.characters =  parameter.characters  + "ěščřžýáíéůúĚŠČŘŽÝÁÍÉÚŮ"; // přidejte všechny znaky, které chcete zahrnout
+        parameter.characters = parameter.characters + "ěščřžýáíéĚŠČŘŽÝÁÍÉťďůúŤĎÚŮ";
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
+    public static BitmapFont setFontBig(BitmapFont font){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.characters = parameter.characters + "ěščřžýáíéĚŠČŘŽÝÁÍÉťďůúŤĎÚŮ";
+
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
+    public static BitmapFont setFontBigTlac(BitmapFont font){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 72;
+        parameter.characters = parameter.characters + "ěščřžýáíéĚŠČŘŽÝÁÍÉťďůúŤĎÚŮ";
         font = generator.generateFont(parameter);
         generator.dispose();
         return font;
