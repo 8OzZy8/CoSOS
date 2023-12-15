@@ -20,7 +20,6 @@
 	import com.mygdx.cosos.UI.GameUI;
 	import com.mygdx.cosos.UI.MenuUI;
 	import com.mygdx.cosos.UI.SettingsUI;
-
 	import java.io.*;
 	import java.nio.charset.StandardCharsets;
 	import java.text.Normalizer;
@@ -168,85 +167,116 @@
 			Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 			return pattern.matcher(normalized).replaceAll("");
 		}
-		public static void hledatOdpoved(String hledane){
-			int i = 1;
-			int pozice = 0;
-			for (Odpoved odpoved : Otazka.getOdpovedi()) {
-				hledane = hledane.trim();
-				hledane = hledane.toLowerCase();
-				hledane = removeDiacritics(hledane);
-				String vysledek = odpoved.getText();
-				vysledek = vysledek.trim();
-				vysledek = vysledek.toLowerCase();
+        public static void hledatOdpoved(String hledane){
+            int i = 1;
+            int pozice = 0;
+            for (Odpoved odpoved : Otazka.getOdpovedi()) {
+                hledane = hledane.trim().toLowerCase();
+                hledane = removeDiacritics(hledane);
+
+				String vysledek = odpoved.getText().trim().toLowerCase();
+				vysledek = orezatKoncovky(vysledek);
 				vysledek = removeDiacritics(vysledek);
-				if(hledane.equals(vysledek)){
-					pozice = i;
-				}
-				i++;
-			}
+
+                // Porovnání s využitím Levenshteinovy vzdálenosti
+                int vzdalenost = getLevenshteinDistance(hledane, vysledek);
+                if (vzdalenost < 3) { // Přípustný počet odlišností (lze upravit)
+                    pozice = i;
+                    break;
+                }
+                i++;
+            }
 			int aktivni = ActiveTeam - 1;
 			switch (pozice){
 				case 1:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+1000);
-					odpoved1uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved1uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 1000);
+						odpoved1uhodnuto = true;
+						ActiveTeam++;
 					}
+
 					break;
 				case 2:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+900);
-					odpoved2uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved2uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 900);
+						odpoved2uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				case 3:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+800);
-					odpoved3uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved3uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 800);
+						odpoved3uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				case 4:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+700);
-					odpoved4uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved4uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 700);
+						odpoved4uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				case 5:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+600);
-					odpoved5uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved5uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 600);
+						odpoved5uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				case 6:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+500);
-					odpoved6uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved6uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 500);
+						odpoved6uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				case 7:
-					Tymy[aktivni].setBody(Tymy[aktivni].getBody()+400);
-					odpoved7uhodnuto = true;
-					ActiveTeam++;
-					if(ActiveTeam > pocetTymu){
-						ActiveTeam = 1;
+					if(odpoved7uhodnuto == false) {
+						Tymy[aktivni].setBody(Tymy[aktivni].getBody() + 400);
+						odpoved7uhodnuto = true;
+						ActiveTeam++;
 					}
 					break;
 				default:
 					System.out.println("pozice: " + pozice);
+					ActiveTeam++;
 					break;
 			}
+			if(ActiveTeam > pocetTymu){
+				ActiveTeam = 1;
+			}
 		}
+		private static String orezatKoncovky(String slovo) {
+			String[] koncovky = {"ou", "ami", "ama", "a", "y", "u"};
+			for (String koncovka : koncovky) {
+				if (slovo.endsWith(koncovka)) {
+					slovo = slovo.substring(0, slovo.length() - koncovka.length());
+					break;
+				}
+			}
+			return slovo;
+		}
+        public static int getLevenshteinDistance(String s, String t) {
+            int m = s.length();
+            int n = t.length();
+            int[][] dp = new int[m + 1][n + 1];
+
+            for (int i = 0; i <= m; i++) {
+                for (int j = 0; j <= n; j++) {
+                    if (i == 0) {
+                        dp[i][j] = j;
+                    } else if (j == 0) {
+                        dp[i][j] = i;
+                    } else {
+                        int cost = (s.charAt(i - 1) == t.charAt(j - 1)) ? 0 : 1;
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + cost);
+                    }
+                }
+            }
+
+            return dp[m][n];
+        }
 		public static void NovaOtazka() throws IOException {
 			CoSOS.odpoved1uhodnuto = false;
 			CoSOS.odpoved2uhodnuto = false;

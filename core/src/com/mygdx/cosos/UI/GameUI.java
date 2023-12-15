@@ -266,6 +266,7 @@ public class GameUI {
                     CoSOS.hledatOdpoved(hledane);
                     resetCountdown();
                     CoSOS.StopTimerMusic();
+
                     return true;
                 }
                 return false;
