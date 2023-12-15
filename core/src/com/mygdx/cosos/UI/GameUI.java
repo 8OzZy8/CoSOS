@@ -412,16 +412,18 @@ public class GameUI {
 
         ButtonCasovac = new TextButton("Časomíra", buttonStyleBig);
         ButtonCasovac.setPosition(Gdx.graphics.getWidth()/2 - ButtonCasovac.getWidth()/2, 200);
-        ButtonCasovac.setScale(0.5f);
+
         ButtonCasovac.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (countdownTask != null) {
+                    ButtonCasovac.getLabel().setColor(Color.WHITE);
                     resetCountdown();
+                    CoSOS.StopTimerMusic();
                 } else {
+                    ButtonCasovac.getLabel().setColor(Color.WHITE);
                     startCountdown();
                     CoSOS.StartTimerMusic();
-
                 }
             }
         });
@@ -602,6 +604,7 @@ public class GameUI {
     // Add a new method to reset the countdown
     private void resetCountdown() {
         if (countdownTask != null) {
+
             countdownTask.cancel(); // Cancel the current countdown task
             countdownTask = null; // Reset the countdown task
             ButtonCasovac.setText("Časomíra"); // Reset the button text
@@ -1035,7 +1038,15 @@ public class GameUI {
         }
     }
     public void update(float delta) {
+
         int cilpos =Gdx.graphics.getHeight() - 150;
+
+        if(CoSOS.skipIntro == true){
+            logoScale = logoTargetScale;
+            logoPosition.y = cilpos;
+            CoSOS.stopMusic();
+        }
+
         if (logoScale > logoTargetScale) {
             logoScale -= delta * 0.07f;  // Úprava rychlosti změny velikosti
         }

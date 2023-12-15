@@ -3,11 +3,13 @@
 	import com.badlogic.gdx.ApplicationAdapter;
 	import com.badlogic.gdx.Game;
 	import com.badlogic.gdx.Gdx;
+	import com.badlogic.gdx.Input;
 	import com.badlogic.gdx.audio.Sound;
 	import com.badlogic.gdx.graphics.GL20;
 	import com.badlogic.gdx.graphics.Texture;
 	import com.badlogic.gdx.graphics.g2d.BitmapFont;
 	import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+	import com.badlogic.gdx.math.Interpolation;
 	import com.badlogic.gdx.scenes.scene2d.InputEvent;
 	import com.badlogic.gdx.scenes.scene2d.Stage;
 	import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -63,6 +65,10 @@
 		public static boolean odpoved7uhodnuto = false;
 		public static int ActiveTeam = 1;
 		public static boolean fullscreen;
+		public static boolean skipIntro;
+		private static long startTime;
+		private static long duration = 30000; // Délka písničky v milisekundách
+		private static long warningTime = 10000;
 		public CoSOS(Boolean fullscreen) {
 			this.fullscreen = fullscreen;
 		}
@@ -92,6 +98,7 @@
 
         }
 		public static void SetGame(String tym1, String tym2, String tym3, String tym4){
+			skipIntro = false;
 			ActiveTeam = 1;
 			odpoved1uhodnuto = false;
 			odpoved2uhodnuto = false;
@@ -154,6 +161,12 @@
 					stageGame.draw();
 					Gdx.input.setInputProcessor(stageGame);
 					gameUI.update(Gdx.graphics.getDeltaTime());
+
+					if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+						if(IntroAnim == false){
+						skipIntro = true;
+						}
+					}
 					if(IntroAnim == true){
 						GameUI.AktulizaceShowOdpovedi();
 						GameUI.aktulizovatBody();
@@ -363,6 +376,7 @@
 
 			return radky.get(nahodneCislo);
 		}
+
 
 		@Override
 		public void dispose () {
