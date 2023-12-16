@@ -47,6 +47,8 @@
 
 		private static Sound IntroMusic;
 		private static Sound TimerMusic;
+		private static Sound BadAnswerSound;
+		private static Sound GoodAnswerSound;
 
 		public static boolean reset = false;
 
@@ -94,6 +96,8 @@
             settingsUI = new SettingsUI(stageSet);
             IntroMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/CoSOSIntro.mp3"));
             TimerMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/coSOScas30s.mp3"));
+			BadAnswerSound = Gdx.audio.newSound(Gdx.files.internal("Audio/badAnswer.mp3"));
+			GoodAnswerSound = Gdx.audio.newSound(Gdx.files.internal("Audio/goodAnswer.mp3"));
             pocetTymu = 4;
 
         }
@@ -126,6 +130,12 @@
 			}
 			IntroMusic.play(0.5f);
 
+		}
+		public static void startBadAnswerSound(){
+			BadAnswerSound.play();
+		}
+		public static void startGoodAnswerSound(){
+			GoodAnswerSound.play();
 		}
 		public static void StartTimerMusic(){
 			TimerMusic.play(0.5f);
@@ -200,6 +210,11 @@
                 i++;
             }
 			int aktivni = ActiveTeam - 1;
+			if(pozice <= 7 && pozice >= 1){
+				startGoodAnswerSound();
+			}else {
+				startBadAnswerSound();
+			}
 			switch (pozice){
 				case 1:
 					if(odpoved1uhodnuto == false) {
