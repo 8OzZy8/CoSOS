@@ -68,6 +68,7 @@
 		public static int ActiveTeam = 1;
 		public static boolean fullscreen;
 		public static boolean skipIntro;
+		public static boolean AutomaticCasovac = false;
 		private static long startTime;
 		private static long duration = 30000; // Délka písničky v milisekundách
 		private static long warningTime = 10000;
@@ -104,6 +105,7 @@
 		public static void SetGame(String tym1, String tym2, String tym3, String tym4){
 			skipIntro = false;
 			ActiveTeam = 1;
+			AutomaticCasovac = false;
 			odpoved1uhodnuto = false;
 			odpoved2uhodnuto = false;
 			odpoved3uhodnuto = false;

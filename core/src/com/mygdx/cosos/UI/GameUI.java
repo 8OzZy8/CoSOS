@@ -9,10 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -23,7 +21,6 @@ import com.mygdx.cosos.CoSOS;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.mygdx.cosos.Sada.Odpoved;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class GameUI {
@@ -32,9 +29,11 @@ public class GameUI {
     private TextButton nextTeamButton;
     private TextButton hledatSlovoButton;
     private TextButton ShowAll;
+    private TextButton CheckBoxCas;
     private TextButton NextOtazka;
     private TextButton ButtonCasovac;
     private TextButton.TextButtonStyle buttonStyle;
+    private TextButton.TextButtonStyle buttonStyleGray;
     private TextButton.TextButtonStyle buttonStyleBig;
     private Skin skin;
     private BitmapFont font;
@@ -64,6 +63,8 @@ public class GameUI {
     private Texture Napoveda1TexturaNe;
     private Texture Napoveda2TexturaNe;
     private Texture Napoveda3TexturaNe;
+
+    private ImageButton casovacBoxButton;
 
     private static Label otazkaLabel;
     private Sprite bodyBack1;
@@ -114,6 +115,10 @@ public class GameUI {
     private Drawable napoveda3DrawableNe;
     private Drawable napoveda3DrawablePo;
 
+    private Texture casovacBoxAno;
+    private Texture casovacBoxNe;
+    private Drawable casovacBoxAnoDraw;
+    private Drawable casovacBoxNeDraw;
     private Label Team1Name;
     private static Label Team1Body;
     private Label Team2Name;
@@ -176,6 +181,9 @@ public class GameUI {
         napoveda1TexturaNepouzity = new Texture(Gdx.files.internal("Teamy/napoveda_50_ne.png"));
         napoveda1TexturaPouzity = new Texture(Gdx.files.internal("Teamy/napoveda_50_po.png"));
 
+        casovacBoxAno = new Texture(Gdx.files.internal("policka/CasovacBoxAno.png"));
+        casovacBoxNe = new Texture(Gdx.files.internal("policka/CasovacBoxNe.png"));
+
         napoveda2TexturaNepouzity = new Texture(Gdx.files.internal("Teamy/napoveda_osoba_ne.png"));
         napoveda2TexturaPouzity = new Texture(Gdx.files.internal("Teamy/napoveda_osoba_po.png"));
 
@@ -191,6 +199,8 @@ public class GameUI {
         napoveda3DrawableNe = new TextureRegionDrawable(new TextureRegion(napoveda3TexturaNepouzity));
         napoveda3DrawablePo = new TextureRegionDrawable(new TextureRegion(napoveda3TexturaPouzity));
 
+        casovacBoxAnoDraw = new TextureRegionDrawable(new TextureRegion(casovacBoxAno));
+        casovacBoxNeDraw = new TextureRegionDrawable(new TextureRegion(casovacBoxNe));
 
         Napoveda1TexturaNe = new Texture(Gdx.files.internal("Teamy/napoveda_50_ne.png"));
         Napoveda2TexturaNe = new Texture(Gdx.files.internal("Teamy/napoveda_osoba_ne.png"));
@@ -229,7 +239,9 @@ public class GameUI {
     public void drawGameUI(){
         buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
-
+        buttonStyleGray = new TextButton.TextButtonStyle();
+        buttonStyleGray.font = font;
+        buttonStyleGray.font.setColor(Color.GRAY);
         buttonStyleBig = new TextButton.TextButtonStyle();
         buttonStyleBig.font = fontBig;
         menu = new TextButton("Menu", buttonStyle);
@@ -266,7 +278,17 @@ public class GameUI {
                     CoSOS.hledatOdpoved(hledane);
                     resetCountdown();
                     CoSOS.StopTimerMusic();
-
+                    if(CoSOS.AutomaticCasovac == true){
+                        if (countdownTask != null) {
+                            ButtonCasovac.getLabel().setColor(Color.WHITE);
+                            resetCountdown();
+                            CoSOS.StopTimerMusic();
+                        } else {
+                            ButtonCasovac.getLabel().setColor(Color.WHITE);
+                            startCountdown();
+                            CoSOS.StartTimerMusic();
+                        }
+                    }
                     return true;
                 }
                 return false;
@@ -484,6 +506,29 @@ public class GameUI {
         });
         stageGame.addActor(ShowAll);
 
+        CheckBoxCas = new TextButton("Auto. Časomíra:", buttonStyle);
+        CheckBoxCas.setPosition(105, nextTeamButton.getY() - 50);
+        stageGame.addActor(CheckBoxCas);
+
+        ImageButton.ImageButtonStyle casovacAutomaticStyle = new ImageButton.ImageButtonStyle();
+        casovacAutomaticStyle.imageUp = casovacBoxNeDraw;
+        casovacBoxButton = new ImageButton(casovacAutomaticStyle);
+        casovacBoxButton.setPosition(CheckBoxCas.getX() + 185, nextTeamButton.getY()-50);
+        casovacBoxButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(CoSOS.AutomaticCasovac == false){
+                    CoSOS.AutomaticCasovac = true;
+                    casovacBoxButton.getStyle().imageUp = casovacBoxAnoDraw;
+                }else {
+                    CoSOS.AutomaticCasovac = false;
+                    casovacBoxButton.getStyle().imageUp = casovacBoxNeDraw;
+                }
+            }
+        });
+        stageGame.addActor(casovacBoxButton);
+
+
         hledatSlovoButton = new TextButton("Hledat", buttonStyle);
         hledatSlovoButton.setPosition(Gdx.graphics.getWidth()/2 - hledatSlovoButton.getPrefWidth()/2, 20);
         hledatSlovoButton.addListener(new ClickListener() {
@@ -493,6 +538,17 @@ public class GameUI {
                 CoSOS.hledatOdpoved(hledane);
                 resetCountdown();
                 CoSOS.StopTimerMusic();
+                if(CoSOS.AutomaticCasovac == true){
+                    if (countdownTask != null) {
+                        ButtonCasovac.getLabel().setColor(Color.WHITE);
+                        resetCountdown();
+                        CoSOS.StopTimerMusic();
+                    } else {
+                        ButtonCasovac.getLabel().setColor(Color.WHITE);
+                        startCountdown();
+                        CoSOS.StartTimerMusic();
+                    }
+                }
             }
         });
         stageGame.addActor(hledatSlovoButton);
@@ -521,7 +577,7 @@ public class GameUI {
                             countdownButton.getLabel().setColor(Color.WHITE);
                             resetCountdown();
                         }
-                    }, 5);
+                    }, 3);
                 } else if (secondsLeft < 0) {
                     countdownButton.setDisabled(false);
                     countdownButton.getLabel().setColor(Color.WHITE);
@@ -997,6 +1053,8 @@ public class GameUI {
         hledatSlovoButton.setVisible(false);
         NextOtazka.setVisible(false);
         ShowAll.setVisible(false);
+        CheckBoxCas.setVisible(false);
+        casovacBoxButton.setVisible(false);
         hledatSLovo.setVisible(false);
         ButtonCasovac.setVisible(false);
         nextTeamButton.setVisible(false);
