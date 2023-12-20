@@ -39,4 +39,22 @@ public class ManagerUI {
         return font;
     }
 
+    public static BitmapFont setFontSmall(BitmapFont font){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 24;
+        parameter.characters = parameter.characters + "ěščřžýáíéĚŠČŘŽÝÁÍÉťďůúŤĎÚŮ";
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
+    public static BitmapFont setFontSmaller(BitmapFont font){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Font/BebasNeue-Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 4;
+        parameter.characters = parameter.characters + "ěščřžýáíéĚŠČŘŽÝÁÍÉťďůúŤĎÚŮ";
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
 }

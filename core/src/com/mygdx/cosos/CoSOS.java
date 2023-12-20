@@ -130,7 +130,7 @@
 					Tymy[3] = new Tym(tym4,0, false,false,false);
 					break;
 			}
-			IntroMusic.play(0.5f);
+			IntroMusic.play(0.3f);
 
 		}
 		public static void startBadAnswerSound(){
@@ -140,7 +140,7 @@
 			GoodAnswerSound.play();
 		}
 		public static void StartTimerMusic(){
-			TimerMusic.play(0.5f);
+			TimerMusic.play(0.3f);
 		}
 		public static void StopTimerMusic(){
 			TimerMusic.stop();

@@ -37,6 +37,7 @@ public class GameUI {
     private TextButton.TextButtonStyle buttonStyleBig;
     private Skin skin;
     private BitmapFont font;
+    private static BitmapFont fontSmall;
 
     private static BitmapFont fontBig;
     private BitmapFont fontBigTlac;
@@ -113,6 +114,7 @@ public class GameUI {
     private Drawable napoveda2DrawablePo;
 
     private Drawable napoveda3DrawableNe;
+    private static BitmapFont fontSmaller;
     private Drawable napoveda3DrawablePo;
 
     private Texture casovacBoxAno;
@@ -147,7 +149,8 @@ public class GameUI {
     private float logoTargetScale = 0.2f;  // Cílová velikost loga
     private Vector2 logoPosition = new Vector2(Gdx.graphics.getWidth() / 2, (Gdx.graphics.getHeight() / 2));  // Původní pozice loga
     private Timer.Task countdownTask;
-    private LabelStyle textLabelStyle;
+    private static LabelStyle textLabelStyle;
+    private static LabelStyle textSmall;
     private SpriteBatch batch;
     public GameUI(Stage stageGame, SpriteBatch batch){
         this.stageGame = stageGame;
@@ -156,12 +159,18 @@ public class GameUI {
         font = ManagerUI.setFont(font);
         fontBig = ManagerUI.setFontBig(font);
         fontBigTlac = ManagerUI.setFontBigTlac(fontBigTlac);
+        fontSmall = ManagerUI.setFontSmall(fontSmall);
+
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.WHITE;
 
         Label.LabelStyle textLabelStyle = new Label.LabelStyle();
         textLabelStyle.font = font;
+        textLabelStyle.fontColor = Color.WHITE;
+
+        Label.LabelStyle textSmall = new Label.LabelStyle();
+        textLabelStyle.font = fontSmall;
         textLabelStyle.fontColor = Color.WHITE;
 
         logoTexture = new Texture(Gdx.files.internal("Logo/CoSOSLogo1920.png"));
@@ -249,10 +258,11 @@ public class GameUI {
         menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                CoSOS.StavHry = CoSOS.GameState.MENU;
+
                 CoSOS.stopMusic();
                 CoSOS.StopTimerMusic();
                 resetGameUI();
+                CoSOS.StavHry = CoSOS.GameState.MENU;
             }
         });
         stageGame.addActor(menu);
@@ -594,13 +604,36 @@ public class GameUI {
         Timer.schedule(countdownTask, 1, 1, countdownSeconds);
     }
     public static void aktulizaceOtazek(){
-
+        Label.LabelStyle textLabelStyle = new Label.LabelStyle();
+        textLabelStyle.font = fontBig;
+        textLabelStyle.fontColor = Color.WHITE;
+        fontSmall = ManagerUI.setFontSmall(fontSmall);
+        Label.LabelStyle textSmall = new Label.LabelStyle();
+        textSmall.font = fontSmall;
+        textSmall.fontColor = Color.WHITE;
         otazkaLabel.setText(CoSOS.Otazka.getText());
+
+        fontSmaller = ManagerUI.setFontSmaller(fontSmaller);
+        Label.LabelStyle textSmaller = new Label.LabelStyle();
+        textSmaller.font = fontSmaller;
+        textSmaller.fontColor = Color.WHITE;
+        otazkaLabel.setText(CoSOS.Otazka.getText());
+
         int i = 0;
+        int dlouhy = 0;
         String[] odpovedi = new String[7];
+        int[] dlouhePole = new int[7];
         for (Odpoved odpoved : CoSOS.Otazka.getOdpovedi()) {
             if( i < odpovedi.length) {
                 if (odpoved != null) {
+                    if(odpoved.getText().length() > 12){
+                        dlouhy = 1;
+                    }else if(odpoved.getText().length() > 23) {
+                        dlouhy = 2;
+                    }else {
+                        dlouhy = 0;
+                    }
+                    dlouhePole[i] = dlouhy;
                     odpovedi[i] = odpoved.getText();
                 } else {
                     odpovedi[i] = "";
@@ -608,6 +641,57 @@ public class GameUI {
             i++;
             }
         }
+
+        if (dlouhePole[0] == 1) {
+            odpoved1.setStyle(textSmall);
+        } else if(dlouhePole[0] == 2){
+            odpoved1.setStyle(textSmaller);
+        }else {
+            odpoved1.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[1] == 1) {
+            odpoved2.setStyle(textSmall);
+        } else if(dlouhePole[1] == 2){
+            odpoved2.setStyle(textSmaller);
+        }else {
+            odpoved2.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[2] == 1) {
+            odpoved3.setStyle(textSmall);
+        } else if(dlouhePole[2] == 2){
+            odpoved3.setStyle(textSmaller);
+        }else {
+            odpoved3.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[3] == 1) {
+            odpoved4.setStyle(textSmall);
+        } else if(dlouhePole[3] == 2){
+            odpoved4.setStyle(textSmaller);
+        }else {
+            odpoved4.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[4] == 1) {
+            odpoved5.setStyle(textSmall);
+        } else if(dlouhePole[4] == 2){
+            odpoved5.setStyle(textSmaller);
+        }else {
+            odpoved5.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[5] == 1) {
+            odpoved6.setStyle(textSmall);
+        } else if(dlouhePole[5] == 2){
+            odpoved6.setStyle(textSmaller);
+        }else {
+            odpoved6.setStyle(textLabelStyle);
+        }
+        if (dlouhePole[6] == 1) {
+            odpoved7.setStyle(textSmall);
+        } else if(dlouhePole[6] == 2){
+            odpoved7.setStyle(textSmaller);
+        }else {
+            odpoved7.setStyle(textLabelStyle);
+        }
+
         odpoved1.setText(odpovedi[0]);
         odpoved2.setText(odpovedi[1]);
         odpoved3.setText(odpovedi[2]);
