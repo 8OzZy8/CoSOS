@@ -72,6 +72,9 @@
 		private static long startTime;
 		private static long duration = 30000; // Délka písničky v milisekundách
 		private static long warningTime = 10000;
+
+		public static int PocetKol = 10;
+		public static int AktualniKolo = 0;
 		public CoSOS(Boolean fullscreen) {
 			this.fullscreen = fullscreen;
 		}
@@ -103,6 +106,7 @@
 
         }
 		public static void SetGame(String tym1, String tym2, String tym3, String tym4){
+			AktualniKolo = 0;
 			skipIntro = false;
 			ActiveTeam = 1;
 			AutomaticCasovac = false;
@@ -173,7 +177,13 @@
 					stageGame.draw();
 					Gdx.input.setInputProcessor(stageGame);
 					gameUI.update(Gdx.graphics.getDeltaTime());
-
+					int polAc = ActiveTeam - 1;
+					if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+						Tymy[polAc].setBody(Tymy[polAc].getBody()+100);
+					}
+					if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+						Tymy[polAc].setBody(Tymy[polAc].getBody()-100);
+					}
 					if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 						if(IntroAnim == false){
 						skipIntro = true;
@@ -308,6 +318,7 @@
             return dp[m][n];
         }
 		public static void NovaOtazka() throws IOException {
+			AktualniKolo++;
 			CoSOS.odpoved1uhodnuto = false;
 			CoSOS.odpoved2uhodnuto = false;
 			CoSOS.odpoved3uhodnuto = false;

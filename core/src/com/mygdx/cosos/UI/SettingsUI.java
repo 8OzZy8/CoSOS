@@ -23,6 +23,7 @@ public class SettingsUI  {
     private TextButton menu;
     private TextButton.TextButtonStyle buttonStyle;
     private Label pocetTymuLabel;
+    private Label pocetKolLabel;
     private TextField teamNameField1;
     private Label teamLabel1;
     private TextField teamNameField2;
@@ -70,6 +71,47 @@ public class SettingsUI  {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
+
+        //Počet kol
+        Label labelPocteKol = new Label("Počet kol:", labelStyle);
+        labelPocteKol.setPosition(Gdx.graphics.getWidth()/2 - labelPocteKol.getPrefWidth(), Gdx.graphics.getHeight() - 100);
+        stageSet.addActor(labelPocteKol);
+
+        TextButton SnizitKolButton;
+        SnizitKolButton = new TextButton("<", buttonStyle);
+        SnizitKolButton.setPosition(labelPocteKol.getX()+labelPocteKol.getPrefWidth()+50, labelPocteKol.getY());
+        SnizitKolButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                CoSOS.PocetKol--;
+                if(CoSOS.PocetKol < 3){
+                    CoSOS.PocetKol = 20;
+                }
+                updatePocetKolLabel();
+            }
+        });
+        stageSet.addActor(SnizitKolButton);
+
+        pocetKolLabel = new Label(String.valueOf(CoSOS.PocetKol), labelStyle);
+        pocetKolLabel.setPosition(SnizitKolButton.getX()+SnizitKolButton.getPrefWidth() + 50, labelPocteKol.getY());
+        stageSet.addActor(pocetKolLabel);
+
+        TextButton ZvysitKolButton;
+        ZvysitKolButton = new TextButton(">", buttonStyle);
+        ZvysitKolButton.setPosition(pocetKolLabel.getX()+pocetKolLabel.getPrefWidth()+50, pocetKolLabel.getY());
+        ZvysitKolButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                CoSOS.PocetKol++;
+                if(CoSOS.PocetKol > 20){
+                    CoSOS.PocetKol = 3;
+                }
+                updatePocetKolLabel();
+            }
+        });
+        stageSet.addActor(ZvysitKolButton);
+
+
 
         // Create the label with the text "Počet týmů"
         Label labelPocteTymu = new Label("Počet týmů:", labelStyle);
@@ -188,6 +230,9 @@ public class SettingsUI  {
             }
         });
         stageSet.addActor(pokracovat);
+    }
+    void updatePocetKolLabel(){
+        pocetKolLabel.setText(String.valueOf(CoSOS.PocetKol));
     }
     void updatePocetTymuLabel() {
         pocetTymuLabel.setText(String.valueOf(CoSOS.pocetTymu));

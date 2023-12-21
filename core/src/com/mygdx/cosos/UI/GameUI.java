@@ -145,6 +145,8 @@ public class GameUI {
     private static Label odpoved7;
     private Label odmena7;
 
+    private static Label pocetKolLabel;
+
     private  float logoScale = 0.5f;  // Původní velikost loga
     private float logoTargetScale = 0.2f;  // Cílová velikost loga
     private Vector2 logoPosition = new Vector2(Gdx.graphics.getWidth() / 2, (Gdx.graphics.getHeight() / 2));  // Původní pozice loga
@@ -253,6 +255,7 @@ public class GameUI {
         buttonStyleGray.font.setColor(Color.GRAY);
         buttonStyleBig = new TextButton.TextButtonStyle();
         buttonStyleBig.font = fontBig;
+
         menu = new TextButton("Menu", buttonStyle);
         menu.setPosition(25, Gdx.graphics.getHeight() - 50);
         menu.addListener(new ClickListener() {
@@ -562,6 +565,14 @@ public class GameUI {
             }
         });
         stageGame.addActor(hledatSlovoButton);
+
+        Label.LabelStyle textLabelStyleSmall = new Label.LabelStyle();
+        textLabelStyleSmall.font = fontSmall;
+        textLabelStyleSmall.fontColor = Color.WHITE;
+
+        pocetKolLabel = new Label(CoSOS.AktualniKolo + " / " + CoSOS.PocetKol, textLabelStyleSmall);
+        pocetKolLabel.setPosition(Gdx.graphics.getWidth()-70,20);
+        stageGame.addActor(pocetKolLabel);
 
         drawTeams();
     }
@@ -1064,6 +1075,7 @@ public class GameUI {
                 team4Back.setTexture(TeamBackgroundTextActive);
                 break;
         }
+        pocetKolLabel.setText(CoSOS.AktualniKolo + " / " + CoSOS.PocetKol);
     }
     public void resetAnimation() {
         logoScale = 0.5f;
@@ -1091,7 +1103,7 @@ public class GameUI {
         hideSprite(team2Back);
         hideSprite(team3Back);
         hideSprite(team4Back);
-
+        pocetKolLabel.setVisible(false);
         Team1Name.setVisible(false);
         Team1Body.setVisible(false);
         Team2Name.setVisible(false);
